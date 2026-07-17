@@ -1,6 +1,6 @@
-const CACHE='nihongo-pocket-v2';
+const CACHE='nihongo-pocket-v3';
 const ASSETS=[
-'./nihongo_pocket_10_lessons.html',
+'./index.html',
 './manifest.json',
 './icon-192.png',
 './icon-512.png'

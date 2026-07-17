@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#b5222f">
+<title>Nihongo Pocket</title>
+<style>
+:root{--bg:#f7f3ec;--card:#fff;--ink:#1f1c1a;--muted:#6e675f;--red:#b5222f;--red2:#8e1722;--line:#e7ded3;--gold:#d99c2b;--green:#2d7c59}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button,input{font:inherit}.app{max-width:720px;margin:auto;min-height:100vh;padding-bottom:92px}
+header{padding:24px 18px 14px;background:linear-gradient(140deg,var(--red),var(--red2));color:white;border-radius:0 0 28px 28px}
+.brand{display:flex;justify-content:space-between;align-items:center}.brand h1{font-size:26px;margin:0}.brand small{opacity:.85}
+.progress-wrap{margin-top:18px}.progress-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px}.bar{height:9px;background:#ffffff35;border-radius:99px;overflow:hidden}.bar>div{height:100%;background:white;width:0;transition:.3s}
+main{padding:16px}.screen{display:none}.screen.active{display:block}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 8px 28px #604c3820}
+.hero h2{margin:0 0 8px}.hero p{color:var(--muted);margin:0 0 14px;line-height:1.45}
+.primary,.secondary,.iconbtn{border:0;border-radius:14px;padding:13px 16px;cursor:pointer}.primary{background:var(--red);color:white;font-weight:700}.secondary{background:#eee6dc;color:var(--ink);font-weight:650}.row{display:flex;gap:10px;flex-wrap:wrap}
+.lesson-grid{display:grid;gap:11px;margin-top:16px}.lesson{background:white;border:1px solid var(--line);border-radius:18px;padding:15px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}.lesson h3{margin:0 0 4px;font-size:16px}.lesson p{margin:0;color:var(--muted);font-size:13px}.badge{min-width:44px;text-align:center;background:#f1e8dd;padding:7px;border-radius:12px;font-size:12px;font-weight:700}
+.topline{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.back{background:none;border:0;font-size:16px;padding:8px;cursor:pointer}.counter{color:var(--muted);font-size:14px}
+.flashcard{position:relative;background:white;border:1px solid var(--line);border-radius:26px;min-height:400px;padding:28px 22px;display:flex;flex-direction:column;justify-content:center;text-align:center;box-shadow:0 12px 36px #604c3822;cursor:pointer}
+.flashcard .prompt{font-size:27px;font-weight:800}.answer{display:none}.flashcard.revealed .answer{display:block}.flashcard.revealed .hint{display:none}.jp{font-size:35px;font-weight:800;margin:20px 0 8px}.romaji{font-size:20px;color:var(--red);font-weight:700}.note{margin:18px auto 0;color:var(--muted);line-height:1.45;max-width:420px}.hint{color:var(--muted);margin-top:25px}
+.card-actions{display:flex;justify-content:center;gap:12px;margin-top:15px}.round{width:52px;height:52px;border-radius:50%;border:0;background:white;box-shadow:0 5px 18px #604c3825;font-size:22px;cursor:pointer}.round.fav.on{background:#fff0cb}
+.rating{display:none;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.rating.show{display:grid}.rating button{border:0;padding:13px 5px;border-radius:13px;font-weight:700}.hard{background:#f7d9d9}.good{background:#e8e2d9}.easy{background:#d8efe3}
+.quizbox{background:white;border:1px solid var(--line);border-radius:22px;padding:20px}.question{font-size:22px;font-weight:800;margin:12px 0 18px}.options{display:grid;gap:10px}.option{border:1px solid var(--line);background:#fff;padding:14px;border-radius:14px;text-align:left;cursor:pointer}.option.correct{border-color:var(--green);background:#e2f3ea}.option.wrong{border-color:var(--red);background:#f8dddd}.result{margin-top:14px;font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.stat{background:white;border:1px solid var(--line);border-radius:17px;padding:14px;text-align:center}.stat b{display:block;font-size:24px;color:var(--red)}.stat span{font-size:12px;color:var(--muted)}
+.favlist{display:grid;gap:9px}.favitem{background:white;border:1px solid var(--line);border-radius:15px;padding:13px}.favitem b{display:block}.favitem span{color:var(--muted);font-size:14px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fffefc;border-top:1px solid var(--line);display:flex;justify-content:center;z-index:5;padding-bottom:env(safe-area-inset-bottom)}
+.navinner{width:min(720px,100%);display:grid;grid-template-columns:repeat(4,1fr)}nav button{border:0;background:none;padding:11px 4px 9px;color:var(--muted);font-size:12px;cursor:pointer}nav button span{display:block;font-size:21px;margin-bottom:2px}nav button.active{color:var(--red);font-weight:700}
+.search{width:100%;border:1px solid var(--line);background:white;border-radius:14px;padding:12px 14px;margin-bottom:12px}
+@media(max-width:420px){.flashcard{min-height:365px}.jp{font-size:31px}.prompt{font-size:24px!important}}
+
+/* Enhanced travel-learning UI */
+body.dark{--bg:#171717;--card:#232323;--ink:#f5f1ea;--muted:#b9afa4;--line:#39332d;--red:#e34b58;--red2:#ba2b38;--gold:#f2b84b;--green:#62b88b}
+body.dark header{background:linear-gradient(140deg,#7e1720,#b5222f)}
+body.dark nav{background:#1e1e1e}
+body.dark .lesson,body.dark .hero,body.dark .flashcard,body.dark .quizbox,body.dark .stat,body.dark .favitem,body.dark .option{background:var(--card)}
+body.dark .secondary{background:#342f2a;color:var(--ink)}
+body.dark .round{background:#2b2b2b}
+.xp-pill{background:#ffffff24;border:1px solid #ffffff40;border-radius:999px;padding:8px 12px;font-weight:800;font-size:13px}
+.header-actions{display:flex;gap:8px;align-items:center}
+.theme-btn{border:0;background:#ffffff20;color:white;width:38px;height:38px;border-radius:50%;cursor:pointer}
+.daily-card{margin-top:16px;background:linear-gradient(135deg,#fff8ec,#fff);border:1px solid var(--line);border-radius:22px;padding:16px}
+body.dark .daily-card{background:linear-gradient(135deg,#2a2520,#232323)}
+.daily-card h3{margin:0 0 6px}
+.daily-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.mini-goal{background:#f8efe5;border-radius:15px;padding:12px}
+body.dark .mini-goal{background:#302a25}
+.mini-goal b{display:block;font-size:18px}
+.level-strip{margin-top:12px;background:#ffffff22;border-radius:14px;padding:10px 12px;font-size:13px}
+.achievement-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+.achievement{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:12px;display:flex;gap:10px;align-items:center}
+.achievement.locked{opacity:.45;filter:grayscale(1)}
+.achievement .icon{font-size:25px}.achievement b{display:block;font-size:14px}.achievement small{color:var(--muted)}
+.lesson .lesson-icon{font-size:24px;margin-right:10px}
+.lesson-left{display:flex;align-items:center}
+.card-top-tag{position:absolute;left:18px;top:16px;background:#f4e7d8;color:var(--red);padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800}
+body.dark .card-top-tag{background:#3a2c2d}
+.streak-flame{display:inline-block;animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.quiz-progress{height:8px;border-radius:99px;background:#eee3d6;overflow:hidden;margin-bottom:14px}
+.quiz-progress>div{height:100%;background:var(--red);transition:.25s}
+.feedback-card{margin-top:14px;padding:12px;border-radius:14px;display:none}
+.feedback-card.show{display:block}
+.feedback-card.ok{background:#dff2e7;color:#205f43}
+.feedback-card.no{background:#f8dfdf;color:#7b2028}
+body.dark .feedback-card.ok{background:#213c2e;color:#b8ebce}
+body.dark .feedback-card.no{background:#47262a;color:#ffc7cd}
+@media(max-width:420px){.achievement-grid,.daily-grid{grid-template-columns:1fr}}
+
+</style>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#b5222f">
+<script>
+if ('serviceWorker' in navigator){
+window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js'));
+}
+</script>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">
+<div><h1>日本語 Pocket</h1><small>10 lessons for your Japan trip</small></div>
+<div class="header-actions">
+  <div class="xp-pill"><span id="xpTotal">0</span> XP</div>
+  <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle dark mode">◐</button>
+</div>
+</div>
+<div class="level-strip">Level <b id="levelNum">1</b> · <span id="levelText">Trip Starter</span></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Overall progress</span><span id="progressText">0%</span></div><div class="bar"><div id="progressBar"></div></div></div>
+</header>
+<main>
+<section id="home" class="screen active">
+  <div class="hero">
+    <h2>今日の練習 — Today’s practice</h2>
+    <p>Study a few cards, say them aloud, and take a quick quiz. Five minutes is enough.</p>
+    <div class="row"><button class="primary" onclick="startReview()">Start daily review</button><button class="secondary" onclick="startQuiz()">Quick quiz</button></div>
+  </div>
+  <div class="daily-card">
+    <h3>Daily goal</h3>
+    <div style="color:var(--muted);font-size:14px">A little Japanese every day beats one giant cram session.</div>
+    <div class="daily-grid">
+      <div class="mini-goal"><b><span id="dailyDone">0</span>/10</b><span>cards today</span></div>
+      <div class="mini-goal"><b><span class="streak-flame">🔥</span> <span id="dailyStreak">1</span></b><span>day streak</span></div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><b id="knownCount">0</b><span>learned</span></div>
+    <div class="stat"><b id="streak">1</b><span>day streak</span></div>
+    <div class="stat"><b id="favCount">0</b><span>favourites</span></div>
+  </div>
+  <h2 style="font-size:19px">Your 10 lessons</h2>
+  <div id="lessonGrid" class="lesson-grid"></div>
+  <h2 style="font-size:19px;margin-top:24px">Achievements</h2>
+  <div id="achievementGrid" class="achievement-grid"></div>
+</section>
+
+<section id="study" class="screen">
+  <div class="topline"><button class="back" onclick="goHome()">← Lessons</button><span id="cardCounter" class="counter"></span></div>
+  <div id="flashcard" class="flashcard" onclick="revealCard()"><div id="lessonTag" class="card-top-tag"></div>
+    <div class="prompt" id="cardEn"></div>
+    <div class="hint">Tap to reveal</div>
+    <div class="answer"><div class="jp" id="cardJp"></div><div class="romaji" id="cardRomaji"></div><div class="note" id="cardNote"></div></div>
+  </div>
+  <div class="card-actions">
+    <button class="round" onclick="event.stopPropagation();speakCurrent()" aria-label="Play pronunciation">🔊</button>
+    <button id="favBtn" class="round fav" onclick="event.stopPropagation();toggleFav()" aria-label="Favourite">☆</button>
+  </div>
+  <div id="rating" class="rating">
+    <button class="hard" onclick="rateCard(1)">Again</button>
+    <button class="good" onclick="rateCard(3)">Got it</button>
+    <button class="easy" onclick="rateCard(5)">Easy</button>
+  </div>
+</section>
+
+<section id="quiz" class="screen">
+  <div class="topline"><button class="back" onclick="goHome()">← Home</button><span id="quizCounter" class="counter"></span></div>
+  <div class="quizbox">
+    <div class="quiz-progress"><div id="quizBar"></div></div>
+    <div style="color:var(--muted);font-size:13px">Choose the Japanese translation</div>
+    <div id="question" class="question"></div>
+    <div id="options" class="options"></div>
+    <div id="quizResult" class="feedback-card"></div>
+    <button id="nextQuiz" class="primary" style="display:none;margin-top:14px" onclick="nextQuestion()">Next</button>
+  </div>
+</section>
+
+<section id="favourites" class="screen">
+  <h2>Favourites</h2>
+  <input id="search" class="search" placeholder="Search English, Japanese, or romaji…" oninput="renderFavourites()">
+  <div id="favList" class="favlist"></div>
+</section>
+
+<section id="progress" class="screen">
+  <h2>Your progress</h2>
+  <div class="hero">
+    <p id="progressSummary"></p>
+    <button class="secondary" onclick="resetProgress()">Reset all progress</button>
+  </div>
+  <div id="lessonProgress" class="lesson-grid"></div>
+</section>
+</main>
+
+<nav><div class="navinner">
+<button class="active" data-screen="home" onclick="showScreen('home',this)"><span>🏠</span>Lessons</button>
+<button data-screen="quiz" onclick="startQuiz(this)"><span>🧠</span>Quiz</button>
+<button data-screen="favourites" onclick="showScreen('favourites',this);renderFavourites()"><span>⭐</span>Saved</button>
+<button data-screen="progress" onclick="showScreen('progress',this);renderProgress()"><span>📈</span>Progress</button>
+</div></nav>
+</div>
+
+<script>
+const PHRASES = [{"lesson": "Greetings", "en": "Hello", "jp": "こんにちは", "romaji": "Konnichiwa", "note": "A polite daytime hello.", "id": 0}, {"lesson": "Greetings", "en": "Good morning", "jp": "おはようございます", "romaji": "Ohayou gozaimasu", "note": "Polite; use in the morning.", "id": 1}, {"lesson": "Greetings", "en": "Good evening", "jp": "こんばんは", "romaji": "Konbanwa", "note": "Use in the evening.", "id": 2}, {"lesson": "Greetings", "en": "Thank you", "jp": "ありがとうございます", "romaji": "Arigatou gozaimasu", "note": "Polite and useful everywhere.", "id": 3}, {"lesson": "Greetings", "en": "You're welcome", "jp": "どういたしまして", "romaji": "Dou itashimashite", "note": "A standard reply to thanks.", "id": 4}, {"lesson": "Greetings", "en": "Excuse me / Sorry", "jp": "すみません", "romaji": "Sumimasen", "note": "Use to get attention, apologize, or say excuse me.", "id": 5}, {"lesson": "Greetings", "en": "Please", "jp": "お願いします", "romaji": "Onegaishimasu", "note": "A polite way to request something.", "id": 6}, {"lesson": "Greetings", "en": "Yes", "jp": "はい", "romaji": "Hai", "note": "Yes.", "id": 7}, {"lesson": "Greetings", "en": "No", "jp": "いいえ", "romaji": "Iie", "note": "No.", "id": 8}, {"lesson": "Greetings", "en": "Goodbye", "jp": "さようなら", "romaji": "Sayounara", "note": "Formal goodbye; often people simply say mata ne.", "id": 9}, {"lesson": "Greetings", "en": "See you", "jp": "またね", "romaji": "Mata ne", "note": "Casual: see you.", "id": 10}, {"lesson": "Greetings", "en": "Nice to meet you", "jp": "はじめまして", "romaji": "Hajimemashite", "note": "Say this when meeting someone for the first time.", "id": 11}, {"lesson": "Basic Conversation", "en": "I don't understand", "jp": "わかりません", "romaji": "Wakarimasen", "note": "Very useful when you are confused.", "id": 12}, {"lesson": "Basic Conversation", "en": "I understand", "jp": "わかりました", "romaji": "Wakarimashita", "note": "I understand / got it.", "id": 13}, {"lesson": "Basic Conversation", "en": "Do you speak English?", "jp": "英語を話せますか", "romaji": "Eigo o hanasemasu ka", "note": "A polite question.", "id": 14}, {"lesson": "Basic Conversation", "en": "A little", "jp": "少しだけ", "romaji": "Sukoshi dake", "note": "Only a little.", "id": 15}, {"lesson": "Basic Conversation", "en": "Please speak slowly", "jp": "ゆっくり話してください", "romaji": "Yukkuri hanashite kudasai", "note": "Ask someone to slow down.", "id": 16}, {"lesson": "Basic Conversation", "en": "Please say that again", "jp": "もう一度お願いします", "romaji": "Mou ichido onegaishimasu", "note": "Please repeat that.", "id": 17}, {"lesson": "Basic Conversation", "en": "What does this mean?", "jp": "これはどういう意味ですか", "romaji": "Kore wa dou iu imi desu ka", "note": "Useful for signs and menus.", "id": 18}, {"lesson": "Basic Conversation", "en": "What is this?", "jp": "これは何ですか", "romaji": "Kore wa nan desu ka", "note": "Point at something while asking.", "id": 19}, {"lesson": "Basic Conversation", "en": "Is it okay?", "jp": "大丈夫ですか", "romaji": "Daijoubu desu ka", "note": "Can mean: Is it okay? Are you okay?", "id": 20}, {"lesson": "Basic Conversation", "en": "It's okay", "jp": "大丈夫です", "romaji": "Daijoubu desu", "note": "I'm okay / it's fine.", "id": 21}, {"lesson": "Basic Conversation", "en": "My name is...", "jp": "私の名前は…です", "romaji": "Watashi no namae wa ... desu", "note": "Introduce yourself.", "id": 22}, {"lesson": "Basic Conversation", "en": "I'm from Portugal", "jp": "ポルトガルから来ました", "romaji": "Porutogaru kara kimashita", "note": "I came from Portugal.", "id": 23}, {"lesson": "Getting Around", "en": "Where is the station?", "jp": "駅はどこですか", "romaji": "Eki wa doko desu ka", "note": "Ask for the station.", "id": 24}, {"lesson": "Getting Around", "en": "Where is the toilet?", "jp": "トイレはどこですか", "romaji": "Toire wa doko desu ka", "note": "An essential travel phrase.", "id": 25}, {"lesson": "Getting Around", "en": "Where is this place?", "jp": "ここはどこですか", "romaji": "Koko wa doko desu ka", "note": "Where am I / where is this?", "id": 26}, {"lesson": "Getting Around", "en": "Please show me on the map", "jp": "地図で見せてください", "romaji": "Chizu de misete kudasai", "note": "Useful when directions are hard to follow.", "id": 27}, {"lesson": "Getting Around", "en": "Right", "jp": "右", "romaji": "Migi", "note": "Right direction.", "id": 28}, {"lesson": "Getting Around", "en": "Left", "jp": "左", "romaji": "Hidari", "note": "Left direction.", "id": 29}, {"lesson": "Getting Around", "en": "Straight ahead", "jp": "まっすぐ", "romaji": "Massugu", "note": "Go straight.", "id": 30}, {"lesson": "Getting Around", "en": "Near", "jp": "近い", "romaji": "Chikai", "note": "Near / close.", "id": 31}, {"lesson": "Getting Around", "en": "Far", "jp": "遠い", "romaji": "Tooi", "note": "Far.", "id": 32}, {"lesson": "Getting Around", "en": "How long does it take?", "jp": "どのくらいかかりますか", "romaji": "Dono kurai kakarimasu ka", "note": "Ask about travel time.", "id": 33}, {"lesson": "Getting Around", "en": "Can I walk there?", "jp": "歩いて行けますか", "romaji": "Aruite ikemasu ka", "note": "Can I get there on foot?", "id": 34}, {"lesson": "Getting Around", "en": "Please take me here", "jp": "ここまでお願いします", "romaji": "Koko made onegaishimasu", "note": "Show a taxi driver the destination.", "id": 35}, {"lesson": "Trains & Transport", "en": "One ticket, please", "jp": "切符を一枚お願いします", "romaji": "Kippu o ichimai onegaishimasu", "note": "Ask for one ticket.", "id": 36}, {"lesson": "Trains & Transport", "en": "Two tickets, please", "jp": "切符を二枚お願いします", "romaji": "Kippu o nimai onegaishimasu", "note": "Ask for two tickets.", "id": 37}, {"lesson": "Trains & Transport", "en": "Which platform?", "jp": "何番線ですか", "romaji": "Nanbansen desu ka", "note": "Which platform number?", "id": 38}, {"lesson": "Trains & Transport", "en": "Does this train go to Tokyo?", "jp": "この電車は東京に行きますか", "romaji": "Kono densha wa Toukyou ni ikimasu ka", "note": "Replace Tokyo with your destination.", "id": 39}, {"lesson": "Trains & Transport", "en": "Is this the right train?", "jp": "この電車で合っていますか", "romaji": "Kono densha de atteimasu ka", "note": "Am I on the correct train?", "id": 40}, {"lesson": "Trains & Transport", "en": "Where do I transfer?", "jp": "どこで乗り換えますか", "romaji": "Doko de norikaemasu ka", "note": "Ask where to change trains.", "id": 41}, {"lesson": "Trains & Transport", "en": "What time is the last train?", "jp": "終電は何時ですか", "romaji": "Shuuden wa nanji desu ka", "note": "Very important at night.", "id": 42}, {"lesson": "Trains & Transport", "en": "IC card", "jp": "ICカード", "romaji": "Ai shii kaado", "note": "Transport card such as Suica or PASMO.", "id": 43}, {"lesson": "Trains & Transport", "en": "Can I charge this card?", "jp": "このカードにチャージできますか", "romaji": "Kono kaado ni chaaji dekimasu ka", "note": "Top up an IC card.", "id": 44}, {"lesson": "Trains & Transport", "en": "Reserved seat", "jp": "指定席", "romaji": "Shiteiseki", "note": "Reserved seat.", "id": 45}, {"lesson": "Trains & Transport", "en": "Non-reserved seat", "jp": "自由席", "romaji": "Jiyuuseki", "note": "Non-reserved seat.", "id": 46}, {"lesson": "Trains & Transport", "en": "The train is delayed", "jp": "電車が遅れています", "romaji": "Densha ga okureteimasu", "note": "The train is running late.", "id": 47}, {"lesson": "Restaurants", "en": "A table for two, please", "jp": "二人です", "romaji": "Futari desu", "note": "Literally: We are two people.", "id": 48}, {"lesson": "Restaurants", "en": "A table for four, please", "jp": "四人です", "romaji": "Yonin desu", "note": "Literally: We are four people.", "id": 49}, {"lesson": "Restaurants", "en": "The menu, please", "jp": "メニューをお願いします", "romaji": "Menyuu o onegaishimasu", "note": "Ask for a menu.", "id": 50}, {"lesson": "Restaurants", "en": "Do you have an English menu?", "jp": "英語のメニューはありますか", "romaji": "Eigo no menyuu wa arimasu ka", "note": "Ask for an English menu.", "id": 51}, {"lesson": "Restaurants", "en": "What do you recommend?", "jp": "おすすめは何ですか", "romaji": "Osusume wa nan desu ka", "note": "Ask for the house recommendation.", "id": 52}, {"lesson": "Restaurants", "en": "I'll have this", "jp": "これをお願いします", "romaji": "Kore o onegaishimasu", "note": "Point to the item.", "id": 53}, {"lesson": "Restaurants", "en": "Water, please", "jp": "お水をお願いします", "romaji": "Omizu o onegaishimasu", "note": "Ask for water.", "id": 54}, {"lesson": "Restaurants", "en": "Delicious!", "jp": "おいしいです", "romaji": "Oishii desu", "note": "A lovely compliment.", "id": 55}, {"lesson": "Restaurants", "en": "The bill, please", "jp": "お会計をお願いします", "romaji": "Okaikei o onegaishimasu", "note": "Ask for the check.", "id": 56}, {"lesson": "Restaurants", "en": "Can I pay by card?", "jp": "カードで払えますか", "romaji": "Kaado de haraemasu ka", "note": "Ask whether cards are accepted.", "id": 57}, {"lesson": "Restaurants", "en": "No meat, please", "jp": "肉なしでお願いします", "romaji": "Niku nashi de onegaishimasu", "note": "Request no meat.", "id": 58}, {"lesson": "Restaurants", "en": "I'm allergic to...", "jp": "…にアレルギーがあります", "romaji": "... ni arerugii ga arimasu", "note": "State the allergen before this phrase.", "id": 59}, {"lesson": "Shopping", "en": "How much is this?", "jp": "これはいくらですか", "romaji": "Kore wa ikura desu ka", "note": "Ask the price.", "id": 60}, {"lesson": "Shopping", "en": "That's expensive", "jp": "高いです", "romaji": "Takai desu", "note": "It's expensive.", "id": 61}, {"lesson": "Shopping", "en": "Do you have a smaller size?", "jp": "もっと小さいサイズはありますか", "romaji": "Motto chiisai saizu wa arimasu ka", "note": "Ask for a smaller size.", "id": 62}, {"lesson": "Shopping", "en": "Do you have a larger size?", "jp": "もっと大きいサイズはありますか", "romaji": "Motto ookii saizu wa arimasu ka", "note": "Ask for a larger size.", "id": 63}, {"lesson": "Shopping", "en": "Can I try this on?", "jp": "試着してもいいですか", "romaji": "Shichaku shite mo ii desu ka", "note": "Ask to try on clothing.", "id": 64}, {"lesson": "Shopping", "en": "I'll take it", "jp": "これにします", "romaji": "Kore ni shimasu", "note": "I'll choose this.", "id": 65}, {"lesson": "Shopping", "en": "Just looking, thank you", "jp": "見ているだけです、ありがとうございます", "romaji": "Mite iru dake desu, arigatou gozaimasu", "note": "Politely say you're browsing.", "id": 66}, {"lesson": "Shopping", "en": "Tax-free?", "jp": "免税ですか", "romaji": "Menzei desu ka", "note": "Ask whether tax-free shopping is available.", "id": 67}, {"lesson": "Shopping", "en": "A bag, please", "jp": "袋をお願いします", "romaji": "Fukuro o onegaishimasu", "note": "Ask for a bag.", "id": 68}, {"lesson": "Shopping", "en": "No bag, thank you", "jp": "袋はいりません", "romaji": "Fukuro wa irimasen", "note": "I don't need a bag.", "id": 69}, {"lesson": "Shopping", "en": "Receipt, please", "jp": "レシートをお願いします", "romaji": "Reshiito o onegaishimasu", "note": "Ask for a receipt.", "id": 70}, {"lesson": "Shopping", "en": "Where is the convenience store?", "jp": "コンビニはどこですか", "romaji": "Konbini wa doko desu ka", "note": "Ask for a convenience store.", "id": 71}, {"lesson": "Hotels", "en": "I have a reservation", "jp": "予約しています", "romaji": "Yoyaku shiteimasu", "note": "Say this at check-in.", "id": 72}, {"lesson": "Hotels", "en": "My name is...", "jp": "名前は…です", "romaji": "Namae wa ... desu", "note": "Give the reservation name.", "id": 73}, {"lesson": "Hotels", "en": "Can I check in?", "jp": "チェックインできますか", "romaji": "Chekku in dekimasu ka", "note": "Ask to check in.", "id": 74}, {"lesson": "Hotels", "en": "Can I leave my luggage here?", "jp": "荷物を預けてもいいですか", "romaji": "Nimotsu o azukete mo ii desu ka", "note": "Useful before check-in or after checkout.", "id": 75}, {"lesson": "Hotels", "en": "What time is checkout?", "jp": "チェックアウトは何時ですか", "romaji": "Chekku auto wa nanji desu ka", "note": "Ask checkout time.", "id": 76}, {"lesson": "Hotels", "en": "The Wi-Fi password, please", "jp": "Wi-Fiのパスワードをお願いします", "romaji": "Waifai no pasuwaado o onegaishimasu", "note": "Ask for the Wi-Fi password.", "id": 77}, {"lesson": "Hotels", "en": "The key, please", "jp": "鍵をお願いします", "romaji": "Kagi o onegaishimasu", "note": "Ask for the room key.", "id": 78}, {"lesson": "Hotels", "en": "There is a problem with the room", "jp": "部屋に問題があります", "romaji": "Heya ni mondai ga arimasu", "note": "Report a room issue.", "id": 79}, {"lesson": "Hotels", "en": "The air conditioning doesn't work", "jp": "エアコンが動きません", "romaji": "Eakon ga ugokimasen", "note": "Report broken air conditioning.", "id": 80}, {"lesson": "Hotels", "en": "Could you call a taxi?", "jp": "タクシーを呼んでください", "romaji": "Takushii o yonde kudasai", "note": "Ask reception to call a taxi.", "id": 81}, {"lesson": "Hotels", "en": "Is breakfast included?", "jp": "朝食は含まれていますか", "romaji": "Choushoku wa fukumareteimasu ka", "note": "Ask about breakfast.", "id": 82}, {"lesson": "Hotels", "en": "Thank you for your help", "jp": "助かりました、ありがとうございます", "romaji": "Tasukarimashita, arigatou gozaimasu", "note": "Thanks, that helped.", "id": 83}, {"lesson": "Family & Kids", "en": "We are a family", "jp": "家族です", "romaji": "Kazoku desu", "note": "We are a family.", "id": 84}, {"lesson": "Family & Kids", "en": "My child is lost", "jp": "子どもが迷子です", "romaji": "Kodomo ga maigo desu", "note": "Urgent: my child is missing.", "id": 85}, {"lesson": "Family & Kids", "en": "Where is the baby changing room?", "jp": "おむつ替えスペースはどこですか", "romaji": "Omutsu-gae supeesu wa doko desu ka", "note": "Ask for a changing area.", "id": 86}, {"lesson": "Family & Kids", "en": "Do you have a child seat?", "jp": "子ども用の椅子はありますか", "romaji": "Kodomoyou no isu wa arimasu ka", "note": "Ask for a high chair.", "id": 87}, {"lesson": "Family & Kids", "en": "Is this suitable for children?", "jp": "子ども向けですか", "romaji": "Kodomo-muke desu ka", "note": "Is it child-friendly?", "id": 88}, {"lesson": "Family & Kids", "en": "Please wait here", "jp": "ここで待ってください", "romaji": "Koko de matte kudasai", "note": "Useful within the family.", "id": 89}, {"lesson": "Family & Kids", "en": "Hold my hand", "jp": "手をつないで", "romaji": "Te o tsunaide", "note": "Casual, to a child.", "id": 90}, {"lesson": "Family & Kids", "en": "Be careful", "jp": "気をつけて", "romaji": "Ki o tsukete", "note": "Casual: be careful.", "id": 91}, {"lesson": "Family & Kids", "en": "Are you okay?", "jp": "大丈夫？", "romaji": "Daijoubu?", "note": "Casual, to family.", "id": 92}, {"lesson": "Family & Kids", "en": "Let's go", "jp": "行きましょう", "romaji": "Ikimashou", "note": "Let's go.", "id": 93}, {"lesson": "Family & Kids", "en": "One moment, please", "jp": "ちょっと待ってください", "romaji": "Chotto matte kudasai", "note": "Please wait a moment.", "id": 94}, {"lesson": "Family & Kids", "en": "We need a break", "jp": "少し休みたいです", "romaji": "Sukoshi yasumitai desu", "note": "We would like to rest a little.", "id": 95}, {"lesson": "Attractions & Disney", "en": "Where is the entrance?", "jp": "入口はどこですか", "romaji": "Iriguchi wa doko desu ka", "note": "Ask for the entrance.", "id": 96}, {"lesson": "Attractions & Disney", "en": "Where is the exit?", "jp": "出口はどこですか", "romaji": "Deguchi wa doko desu ka", "note": "Ask for the exit.", "id": 97}, {"lesson": "Attractions & Disney", "en": "Where is the queue?", "jp": "列はどこですか", "romaji": "Retsu wa doko desu ka", "note": "Ask where the line begins.", "id": 98}, {"lesson": "Attractions & Disney", "en": "How long is the wait?", "jp": "待ち時間はどのくらいですか", "romaji": "Machijikan wa dono kurai desu ka", "note": "Ask about queue time.", "id": 99}, {"lesson": "Attractions & Disney", "en": "Can we take a photo?", "jp": "写真を撮ってもいいですか", "romaji": "Shashin o totte mo ii desu ka", "note": "Ask permission to take a photo.", "id": 100}, {"lesson": "Attractions & Disney", "en": "Could you take our photo?", "jp": "写真を撮ってもらえますか", "romaji": "Shashin o totte moraemasu ka", "note": "Ask someone to photograph your group.", "id": 101}, {"lesson": "Attractions & Disney", "en": "Where is the information desk?", "jp": "案内所はどこですか", "romaji": "Annaijo wa doko desu ka", "note": "Ask for guest services.", "id": 102}, {"lesson": "Attractions & Disney", "en": "What time does it start?", "jp": "何時に始まりますか", "romaji": "Nanji ni hajimarimasu ka", "note": "Ask about a show or event.", "id": 103}, {"lesson": "Attractions & Disney", "en": "What time does it finish?", "jp": "何時に終わりますか", "romaji": "Nanji ni owarimasu ka", "note": "Ask when it ends.", "id": 104}, {"lesson": "Attractions & Disney", "en": "Is re-entry allowed?", "jp": "再入場できますか", "romaji": "Sai-nyuujou dekimasu ka", "note": "Ask whether you can re-enter.", "id": 105}, {"lesson": "Attractions & Disney", "en": "Is this seat available?", "jp": "この席は空いていますか", "romaji": "Kono seki wa aiteimasu ka", "note": "Ask whether a seat is free.", "id": 106}, {"lesson": "Attractions & Disney", "en": "That was fun!", "jp": "楽しかったです", "romaji": "Tanoshikatta desu", "note": "A nice phrase after an experience.", "id": 107}, {"lesson": "Emergencies", "en": "Help!", "jp": "助けてください", "romaji": "Tasukete kudasai", "note": "Use in an emergency.", "id": 108}, {"lesson": "Emergencies", "en": "Please call the police", "jp": "警察を呼んでください", "romaji": "Keisatsu o yonde kudasai", "note": "Police emergency.", "id": 109}, {"lesson": "Emergencies", "en": "Please call an ambulance", "jp": "救急車を呼んでください", "romaji": "Kyuukyuusha o yonde kudasai", "note": "Medical emergency.", "id": 110}, {"lesson": "Emergencies", "en": "Where is the hospital?", "jp": "病院はどこですか", "romaji": "Byouin wa doko desu ka", "note": "Ask for a hospital.", "id": 111}, {"lesson": "Emergencies", "en": "Where is the pharmacy?", "jp": "薬局はどこですか", "romaji": "Yakkyoku wa doko desu ka", "note": "Ask for a pharmacy.", "id": 112}, {"lesson": "Emergencies", "en": "I feel sick", "jp": "気分が悪いです", "romaji": "Kibun ga warui desu", "note": "I feel unwell.", "id": 113}, {"lesson": "Emergencies", "en": "It hurts here", "jp": "ここが痛いです", "romaji": "Koko ga itai desu", "note": "Point to the painful area.", "id": 114}, {"lesson": "Emergencies", "en": "I lost my passport", "jp": "パスポートをなくしました", "romaji": "Pasupooto o nakushimashita", "note": "Report a lost passport.", "id": 115}, {"lesson": "Emergencies", "en": "I lost my wallet", "jp": "財布をなくしました", "romaji": "Saifu o nakushimashita", "note": "Report a lost wallet.", "id": 116}, {"lesson": "Emergencies", "en": "I need a doctor", "jp": "医者が必要です", "romaji": "Isha ga hitsuyou desu", "note": "I need medical help.", "id": 117}, {"lesson": "Emergencies", "en": "Is there an English-speaking doctor?", "jp": "英語を話せる医者はいますか", "romaji": "Eigo o hanaseru isha wa imasu ka", "note": "Ask for an English-speaking doctor.", "id": 118}, {"lesson": "Emergencies", "en": "Please write it down", "jp": "書いてください", "romaji": "Kaite kudasai", "note": "Ask someone to write information down.", "id": 119}];
+const lessons=[...new Set(PHRASES.map(p=>p.lesson))];
+const lessonIcons=['👋','💬','🧭','🚆','🍜','🛍️','🏨','👨‍👩‍👧‍👦','🎡','🆘'];
+const levelNames=['Trip Starter','Polite Explorer','Confident Traveller','Japan Ready'];
+let state=JSON.parse(localStorage.getItem('nihongoPocket')||'{}');
+state.mastery=state.mastery||{}; state.favs=state.favs||[]; state.xp=state.xp||0; state.dailyDone=state.dailyDone||0; state.theme=state.theme||'light';
+state.lastDay=state.lastDay||new Date().toDateString(); state.streak=state.streak||1;
+if(state.lastDay!==new Date().toDateString()){state.streak++;state.lastDay=new Date().toDateString();state.dailyDone=0;save()}
+let deck=[],index=0,currentLesson='',quizDeck=[],qIndex=0,qScore=0,answered=false;
+
+function save(){localStorage.setItem('nihongoPocket',JSON.stringify(state));updateHeader()}
+function showScreen(id,btn){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+ const target=btn||document.querySelector(`nav button[data-screen="${id}"]`); if(target)target.classList.add('active');
+ window.scrollTo(0,0);
+}
+function goHome(){showScreen('home');renderHome()}
+function renderHome(){
+ const grid=document.getElementById('lessonGrid');grid.innerHTML='';
+ lessons.forEach((l,i)=>{
+   const items=PHRASES.filter(p=>p.lesson===l), learned=items.filter(p=>(state.mastery[p.id]||0)>=3).length;
+   const d=document.createElement('div');d.className='lesson';d.onclick=()=>startLesson(l);
+   d.innerHTML=`<div class="lesson-left"><div class="lesson-icon">${lessonIcons[i]}</div><div><h3>${i+1}. ${l}</h3><p>${items.length} phrases · ${learned} learned</p></div></div><div class="badge">${Math.round(learned/items.length*100)}%</div>`;
+   grid.appendChild(d);
+ });
+ updateHeader()
+}
+function updateHeader(){
+ const learned=PHRASES.filter(p=>(state.mastery[p.id]||0)>=3).length, pct=Math.round(learned/PHRASES.length*100);
+ document.getElementById('progressText').textContent=pct+'%';document.getElementById('progressBar').style.width=pct+'%';
+ document.getElementById('knownCount').textContent=learned;document.getElementById('streak').textContent=state.streak;document.getElementById('favCount').textContent=state.favs.length;
+ document.getElementById('xpTotal').textContent=state.xp;
+ const level=Math.min(4,Math.floor(state.xp/250)+1);document.getElementById('levelNum').textContent=level;document.getElementById('levelText').textContent=levelNames[level-1];
+ document.getElementById('dailyDone').textContent=Math.min(state.dailyDone,10);document.getElementById('dailyStreak').textContent=state.streak;
+ renderAchievements();
+}
+function startLesson(l){currentLesson=l;deck=PHRASES.filter(p=>p.lesson===l);index=0;showScreen('study');renderCard()}
+function startReview(){
+ currentLesson='Daily Review';
+ deck=PHRASES.slice().sort((a,b)=>(state.mastery[a.id]||0)-(state.mastery[b.id]||0)).slice(0,15);
+ index=0;showScreen('study');renderCard()
+}
+function renderCard(){
+ if(index>=deck.length){alert('Lesson complete! Great work.');goHome();return}
+ const p=deck[index];document.getElementById('cardEn').textContent=p.en;document.getElementById('cardJp').textContent=p.jp;
+ document.getElementById('cardRomaji').textContent=p.romaji;document.getElementById('cardNote').textContent=p.note;
+ document.getElementById('cardCounter').textContent=`${currentLesson} · ${index+1}/${deck.length}`;document.getElementById('lessonTag').textContent=p.lesson;
+ document.getElementById('flashcard').classList.remove('revealed');document.getElementById('rating').classList.remove('show');
+ document.getElementById('favBtn').textContent=state.favs.includes(p.id)?'★':'☆';document.getElementById('favBtn').classList.toggle('on',state.favs.includes(p.id))
+}
+function revealCard(){document.getElementById('flashcard').classList.add('revealed');document.getElementById('rating').classList.add('show')}
+function rateCard(n){
+ const id=deck[index].id,prev=state.mastery[id]||0;
+ state.mastery[id]=Math.max(prev,n);
+ state.xp+=n===1?2:n===3?8:12;
+ state.dailyDone++;
+ save();index++;renderCard()
+}
+function toggleFav(){const id=deck[index].id;state.favs=state.favs.includes(id)?state.favs.filter(x=>x!==id):[...state.favs,id];save();renderCard()}
+function speakCurrent(){
+ const p=deck[index]; if(!('speechSynthesis' in window)){alert('Speech is not supported in this browser.');return}
+ speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(p.jp);u.lang='ja-JP';u.rate=.78;speechSynthesis.speak(u)
+}
+function shuffle(a){return a.slice().sort(()=>Math.random()-.5)}
+function startQuiz(btn){quizDeck=shuffle(PHRASES).slice(0,10);qIndex=0;qScore=0;answered=false;showScreen('quiz',btn);renderQuestion()}
+function renderQuestion(){
+ if(qIndex>=quizDeck.length){document.querySelector('.quizbox').innerHTML=`<h2>Quiz complete</h2><p>You scored <b>${qScore}/${quizDeck.length}</b>.</p><button class="primary" onclick="location.reload()">Back to lessons</button>`;return}
+ const q=quizDeck[qIndex];document.getElementById('quizCounter').textContent=`Question ${qIndex+1}/${quizDeck.length}`;document.getElementById('quizBar').style.width=`${(qIndex/quizDeck.length)*100}%`;
+ document.getElementById('question').textContent=q.en;document.getElementById('quizResult').textContent='';document.getElementById('quizResult').className='feedback-card';document.getElementById('nextQuiz').style.display='none';answered=false;
+ const wrong=shuffle(PHRASES.filter(p=>p.id!==q.id)).slice(0,3),opts=shuffle([q,...wrong]);
+ const box=document.getElementById('options');box.innerHTML='';
+ opts.forEach(o=>{const b=document.createElement('button');b.className='option';b.textContent=`${o.jp} — ${o.romaji}`;b.onclick=()=>answerQuiz(b,o.id,q.id);box.appendChild(b)})
+}
+function answerQuiz(btn,id,correct){if(answered)return;answered=true;document.querySelectorAll('.option').forEach(b=>b.disabled=true);
+ if(id===correct){btn.classList.add('correct');qScore++;state.xp+=15;save();document.getElementById('quizResult').textContent='Correct! よくできました。 +15 XP';document.getElementById('quizResult').className='feedback-card show ok'}
+ else{btn.classList.add('wrong');[...document.querySelectorAll('.option')].find(b=>b.textContent.startsWith(PHRASES[correct].jp))?.classList.add('correct');document.getElementById('quizResult').textContent='Not quite — review this one again.';document.getElementById('quizResult').className='feedback-card show no'}
+ document.getElementById('nextQuiz').style.display='inline-block'
+}
+function nextQuestion(){qIndex++;renderQuestion()}
+function renderFavourites(){
+ const term=(document.getElementById('search').value||'').toLowerCase();const box=document.getElementById('favList');
+ const items=PHRASES.filter(p=>state.favs.includes(p.id)).filter(p=>(p.en+p.jp+p.romaji).toLowerCase().includes(term));
+ box.innerHTML=items.length?'':'<div class="hero"><p>No favourites yet. Tap ☆ on any flashcard to save it here.</p></div>';
+ items.forEach(p=>{const d=document.createElement('div');d.className='favitem';d.innerHTML=`<b>${p.en}</b><div style="font-size:21px;margin:4px 0">${p.jp}</div><span>${p.romaji}</span>`;box.appendChild(d)})
+}
+function renderProgress(){
+ const learned=PHRASES.filter(p=>(state.mastery[p.id]||0)>=3).length;document.getElementById('progressSummary').textContent=`You have learned ${learned} of ${PHRASES.length} phrases. Keep sessions short and repeat phrases aloud.`;
+ const box=document.getElementById('lessonProgress');box.innerHTML='';
+ lessons.forEach((l,i)=>{const items=PHRASES.filter(p=>p.lesson===l),n=items.filter(p=>(state.mastery[p.id]||0)>=3).length;const d=document.createElement('div');d.className='lesson';d.innerHTML=`<div><h3>${i+1}. ${l}</h3><p>${n} of ${items.length} learned</p></div><div class="badge">${Math.round(n/items.length*100)}%</div>`;box.appendChild(d)})
+}
+function resetProgress(){if(confirm('Reset progress and favourites?')){localStorage.removeItem('nihongoPocket');location.reload()}}
+
+function toggleTheme(){
+ state.theme=state.theme==='dark'?'light':'dark';
+ document.body.classList.toggle('dark',state.theme==='dark');
+ save();
+}
+function renderAchievements(){
+ const learned=PHRASES.filter(p=>(state.mastery[p.id]||0)>=3).length;
+ const achievements=[
+  ['🌱','First Steps','Learn 5 phrases',learned>=5],
+  ['🔥','On a Roll','Reach a 3-day streak',state.streak>=3],
+  ['⭐','Phrase Collector','Save 10 favourites',state.favs.length>=10],
+  ['🗾','Japan Ready','Learn 100 phrases',learned>=100]
+ ];
+ const box=document.getElementById('achievementGrid');if(!box)return;box.innerHTML='';
+ achievements.forEach(a=>{const d=document.createElement('div');d.className='achievement'+(a[3]?'':' locked');d.innerHTML=`<div class="icon">${a[0]}</div><div><b>${a[1]}</b><small>${a[2]}</small></div>`;box.appendChild(d)})
+}
+document.body.classList.toggle('dark',state.theme==='dark');
+
+renderHome();
+</script>
+</body>
+</html>

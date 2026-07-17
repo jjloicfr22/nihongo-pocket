@@ -1,0 +1,25 @@
+{
+  "name": "Nihongo Pocket \u2013 Japan Travel Japanese",
+  "short_name": "Nihongo",
+  "description": "Ten practical Japanese lessons for travellers.",
+  "start_url": "./nihongo_pocket_10_lessons.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f3ec",
+  "theme_color": "#b5222f",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
